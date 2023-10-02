@@ -14,6 +14,8 @@ CONF_INFLUXDB_TOKEN = 'token'
 CONF_INFLUXDB_ORG = 'org'
 CONF_INFLUXDB_BUCKET = 'bucket'
 CONF_INFLUXDB_MEASUREMENT = 'measurement'
+CONF_INFLUXDB_LOCATION = 'location'
+CONF_INFLUXDB_DEVICE = 'device'
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema({
@@ -23,6 +25,8 @@ CONFIG_SCHEMA = cv.All(
         cv.Required(CONF_INFLUXDB_ORG): cv.string,
         cv.Required(CONF_INFLUXDB_BUCKET): cv.string,
         cv.Required(CONF_INFLUXDB_MEASUREMENT): cv.string,
+        cv.Required(CONF_INFLUXDB_LOCATION): cv.string,
+        cv.Required(CONF_INFLUXDB_DEVICE): cv.string,
     }).extend(cv.COMPONENT_SCHEMA),
     cv.only_with_arduino,
     cv.only_on(['esp32', 'esp8266']),
@@ -38,6 +42,8 @@ async def to_code(config):
     cg.add(var.set_org(config[CONF_INFLUXDB_ORG]))
     cg.add(var.set_bucket(config[CONF_INFLUXDB_BUCKET]))
     cg.add(var.set_measurement(config[CONF_INFLUXDB_MEASUREMENT]))
+    cg.add(var.set_location(config[CONF_INFLUXDB_LOCATION]))
+    cg.add(var.set_device(config[CONF_INFLUXDB_DEVICE]))
     
     if CORE.is_esp32:
         cg.add_library('WiFiClientSecure', None)
