@@ -32,6 +32,7 @@ namespace esphome {
                 std::string measurement;
                 std::string location;
                 std::string device;
+                std::string sensor_ids; // dane string "id1,id2,id3"
 
                 std::unique_ptr<InfluxDBClient> client;
                 std::unique_ptr<Point> point;

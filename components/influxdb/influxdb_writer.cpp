@@ -17,13 +17,41 @@ namespace esphome
 
             for (auto *obj : App.get_sensors())
             {
-                if (obj->is_internal())
-                    continue;
+                // if (obj->is_internal())
+                //     continue;
 
-                obj->add_on_state_callback([this, obj](float state)
-                                           { this->on_sensor_update(obj, state); });
+                char *sensor_ids = strdup(this->sensor_ids.c_str());
+                char *token = strtok(sensor_ids, ","); // zrobić kopie str !!!
 
-                batchSize++;
+                // loop through the string to extract all other tokens
+                while (token != NULL)
+                {
+                    if (!strcpm(token, obj->get_object_id().c_str())){
+                        obj->add_on_state_callback([this, obj](float state)
+                                                   { this->on_sensor_update(obj, state); });
+                        
+                        ESP_LOGI(TAG, "Register sensor to export to influxdb: %s", token);
+
+                        batchSize++;
+                        break;
+                    }
+                    // printf(" %s\n", token); // printing each token
+                    token = strtok(NULL, ",");
+                }
+
+                free(sensor_ids);
+
+                // auto n= obj->get_object_id();
+
+                // for( auto *id : this-> sensors_ids){
+
+                //     if ( n.compare(id) ==0 ){
+                //         obj->add_on_state_callback([this, obj](float state)
+                //                                { this->on_sensor_update(obj, state); });
+
+                //         batchSize++;
+                //     }
+                // }
             }
 
             this->client = std::unique_ptr<InfluxDBClient>(new InfluxDBClient(this->url.c_str(), this->org.c_str(), this->bucket.c_str(), this->token.c_str()));
