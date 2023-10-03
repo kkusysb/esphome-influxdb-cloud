@@ -21,9 +21,16 @@ namespace esphome {
                 void set_measurement(std::string measurement) { this->measurement = measurement; }
                 void set_location(std::string location) { this->location = location; }
                 void set_device(std::string device) { this->device = device; }
+                void set_sensor_names(std::string sensor_names) { this->sensor_names = sensor_names; }
 
                 void on_sensor_update(sensor::Sensor *obj, float state);
-                
+#ifdef USE_BINARY_SENSOR
+                void on_sensor_update(binary_sensor::BinarySensor *obj, bool state);
+#endif
+#ifdef USE_TEXT_SENSOR
+                void on_sensor_update(text_sensor::TextSensor *obj, std::string state);
+#endif
+
             protected:
                 std::string url;
                 std::string token;
@@ -32,7 +39,12 @@ namespace esphome {
                 std::string measurement;
                 std::string location;
                 std::string device;
-                std::string sensor_ids; // dane string "id1,id2,id3"
+                /** sensor,binary,text  names  =
+                 * "nam1,nam 2,nn nn3" 
+                 * 
+                 * 
+                 */
+                std::string sensor_names; 
 
                 std::unique_ptr<InfluxDBClient> client;
                 std::unique_ptr<Point> point;
