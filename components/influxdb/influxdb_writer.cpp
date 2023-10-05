@@ -114,7 +114,7 @@ namespace esphome
 
                 this->client = std::unique_ptr<InfluxDBClient>(new InfluxDBClient(this->url.c_str(), this->org.c_str(), this->bucket.c_str(), this->token.c_str()));
                 this->client->setInsecure();
-                this->client->setWriteOptions(WriteOptions().batchSize(batchSize).bufferSize(batchSize * 5));
+                this->client->setWriteOptions(WriteOptions().batchSize(batchSize).bufferSize(batchSize * 2));
 
                 if (this->client->validateConnection())
                 {
