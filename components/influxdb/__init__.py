@@ -14,10 +14,11 @@ CONF_INFLUXDB_TOKEN = 'token'
 CONF_INFLUXDB_ORG = 'org'
 CONF_INFLUXDB_BUCKET = 'bucket'
 CONF_INFLUXDB_MEASUREMENT = 'measurement'
-CONF_INFLUXDB_LOCATION = 'location'
-CONF_INFLUXDB_DEVICE = 'device'
+
+# tags : "device=esp71,location=kotlownia"
+CONF_INFLUXDB_TAGS = 'tags'
+# // sensor_names : "nazaw 1,nazwa2,guzik"
 CONF_INFLUXDB_SENSOR_NAMES = 'sensor_names'
-# // dane string "id1,id2,id3"
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema({
@@ -27,8 +28,7 @@ CONFIG_SCHEMA = cv.All(
         cv.Required(CONF_INFLUXDB_ORG): cv.string,
         cv.Required(CONF_INFLUXDB_BUCKET): cv.string,
         cv.Required(CONF_INFLUXDB_MEASUREMENT): cv.string,
-        cv.Required(CONF_INFLUXDB_LOCATION): cv.string,
-        cv.Required(CONF_INFLUXDB_DEVICE): cv.string,
+        cv.Required(CONF_INFLUXDB_TAGS): cv.string,
         cv.Required(CONF_INFLUXDB_SENSOR_NAMES): cv.string,
 
     }).extend(cv.COMPONENT_SCHEMA),
@@ -46,8 +46,7 @@ async def to_code(config):
     cg.add(var.set_org(config[CONF_INFLUXDB_ORG]))
     cg.add(var.set_bucket(config[CONF_INFLUXDB_BUCKET]))
     cg.add(var.set_measurement(config[CONF_INFLUXDB_MEASUREMENT]))
-    cg.add(var.set_location(config[CONF_INFLUXDB_LOCATION]))
-    cg.add(var.set_device(config[CONF_INFLUXDB_DEVICE]))
+    cg.add(var.set_tags(config[CONF_INFLUXDB_TAGS]))
     cg.add(var.set_sensor_names(config[CONF_INFLUXDB_SENSOR_NAMES]))
     
     if CORE.is_esp32:

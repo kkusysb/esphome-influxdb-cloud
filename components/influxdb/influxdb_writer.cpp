@@ -127,8 +127,24 @@ namespace esphome
 
                 this->point = std::unique_ptr<Point>(new Point(this->measurement.c_str()));
 
-                this->point->addTag("location", this->location.c_str());
-                this->point->addTag("device", this->device.c_str());
+                // this->point->addTag("location", this->location.c_str());
+                // this->point->addTag("device", this->device.c_str());
+
+                char *tags = strdup(this->tags.c_str());
+                char *token = strtok(tags, ",");
+
+                while (token != NULL)
+                {
+                    char tag[50];
+                    char tag_val[50];
+                    if(2== sscanf(token, "%s=%s", tag, tag_val)){
+                        this->point->addTag(tag, tag_val);
+                        ESP_LOGD(TAG, "Register tags to export to influxdb: %s=%s", tag, tag_val);
+                    }
+                    token = strtok(NULL, ",");
+                }
+
+                free(tags);
         }
 
         void InfluxDBWriter::on_sensor_update(sensor::Sensor *obj, float state)

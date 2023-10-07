@@ -19,8 +19,7 @@ namespace esphome {
                 void set_org(std::string org) { this->org = org; }
                 void set_bucket(std::string bucket) { this->bucket = bucket; }
                 void set_measurement(std::string measurement) { this->measurement = measurement; }
-                void set_location(std::string location) { this->location = location; }
-                void set_device(std::string device) { this->device = device; }
+                void set_tags(std::string tags) { this->tags = tags; }
                 void set_sensor_names(std::string sensor_names) { this->sensor_names = sensor_names; }
 
                 void on_sensor_update(sensor::Sensor *obj, float state);
@@ -37,8 +36,7 @@ namespace esphome {
                 std::string org;
                 std::string bucket;
                 std::string measurement;
-                std::string location;
-                std::string device;
+                std::string tags;
                 /** sensor,binary,text  names  =
                  * "nam1,nam 2,nn nn3" 
                  * 
