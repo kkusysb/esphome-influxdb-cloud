@@ -8,6 +8,40 @@ namespace esphome
     {
         static const char *const TAG = "influxdb";
 
+        char * strtok_inner(char *s1, const char *delimit)
+        {
+            static char *lastToken_inn = NULL; /* UNSAFE SHARED STATE! */
+            char *tmp;
+
+            /* Skip leading delimiters if new string. */
+            if (s1 == NULL)
+            {
+                s1 = lastToken_inn;
+                if (s1 == NULL) /* End of story? */
+                    return NULL;
+            }
+            else
+            {
+                s1 += strspn(s1, delimit);
+            }
+
+            /* Find end of segment */
+            tmp = strpbrk(s1, delimit);
+            if (tmp)
+            {
+                /* Found another delimiter, split string and save state. */
+                *tmp = '\0';
+                lastToken_inn = tmp + 1;
+            }
+            else
+            {
+                /* Last segment, remember that. */
+                lastToken_inn = NULL;
+            }
+
+            return s1;
+        }
+
         void InfluxDBWriter::setup()
         {
             ESP_LOGCONFIG(TAG, "Setting up InfluxDB Writer...");
@@ -135,12 +169,25 @@ namespace esphome
 
                 while (token != NULL)
                 {
-                    char tag[50];
-                    char tag_val[50];
-                    if(2== sscanf(token, "%s=%s", tag, tag_val)){
-                        this->point->addTag(tag, tag_val);
-                        ESP_LOGD(TAG, "Register tags to export to influxdb: %s=%s", tag, tag_val);
+                    // char tag[50];
+                    // char tag_val[50];
+                    // if(2== sscanf(token, "%s=%s", tag, tag_val)){
+                    //     this->point->addTag(tag, tag_val);
+                    //     ESP_LOGD(TAG, "Register tags to export to influxdb: %s=%s", tag, tag_val);
+                    // }
+
+                    char *token_tag = strtok_inner(token, "=");
+                    char *token_tag_val= NULL;
+                    if(token_tag){
+                        token_tag_val = strtok_inner(NULL, ",");
+
+                        if (token_tag_val) {
+                            this->point->addTag(token_tag, token_tag_val);
+                            ESP_LOGD(TAG, "Register tags to export to influxdb: %s=%s", token_tag, token_tag_val);
+                        }
                     }
+
+
                     token = strtok(NULL, ",");
                 }
 
